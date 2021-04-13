@@ -40,9 +40,9 @@ class MILTaskset(Taskset):
             else:
                 self.n_tasks = self.n_valid
 
-        self.scale, self.bias = load_scale_and_bias(state_path)
-        self.scale = torch.from_numpy(np.array(self.scale, np.float32))
-        self.bias = torch.from_numpy(np.array(self.bias, np.float32))
+        # self.scale, self.bias = load_scale_and_bias(state_path)
+        # self.scale = torch.from_numpy(np.array(self.scale, np.float32))
+        # self.bias = torch.from_numpy(np.array(self.bias, np.float32))
 
         print("n_tasks:", self.n_tasks)
         print("load all tasks")
@@ -52,14 +52,17 @@ class MILTaskset(Taskset):
             if valid:
                 idx += self.n_train
             demos = []
+            import pdb; pdb.set_trace()
             for j in range(6,18): # [1]
                 path = os.path.join(demo_dir, "cache", "task"+str(idx), "demo"+str(j)+".pt")
+                print(path)
                 demos.append(torch.load(path)) # {vision, state, action}
             visions, states, actions = [], [], []
             for demo in demos:
                 visions.append(demo['vision']) # Don't normalize now!
-                state = torch.matmul(demo['state'], self.scale) + self.bias
-                states.append(state)
+                # state = torch.matmul(demo['state'], self.scale) + self.bias
+                # states.append(state)
+                states.append(demo['state'])
                 actions.append(demo['action']) # -2.0~+2.0
             visions = torch.stack(visions) # 12,100,64,64,3
             states = torch.stack(states)   # 12,100,20

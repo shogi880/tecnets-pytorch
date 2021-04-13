@@ -61,8 +61,8 @@ class TecNets(MetaLearner):
             B = len(U_visions)
             U_n, q_n = U_visions.shape[1], q_visions.shape[1]
 
-            U_s = self.make_sentences(U_visions, True) # B,20
-            q_s = self.make_sentences(q_visions, True) # B,20
+            U_sentence = self.make_sentences(U_visions, True) # B,20
+            q_sentence = self.make_sentences(q_visions, True) # B,20
 
             loss_emb, loss_ctr_U, loss_ctr_q = 0, 0, 0
 
@@ -73,9 +73,9 @@ class TecNets(MetaLearner):
             for jdx in range(B):
                 for idx in range(B):
                     if jdx == idx: continue
-                    q_sj_list.append(q_s[jdx])
-                    U_sj_list.append(U_s[jdx])
-                    U_si_list.append(U_s[idx])
+                    q_sj_list.append(q_sentence[jdx])
+                    U_sj_list.append(U_sentence[jdx])
+                    U_si_list.append(U_sentence[idx])
 
             q_sj = torch.stack(q_sj_list) # B*(B-1), 20
             U_sj = torch.stack(U_sj_list) # B*(B-1), 20
